@@ -1,51 +1,48 @@
 import React, { Component } from 'react';
+import './main.css'
+import classes from './button.css';
 
 class Main extends Component {
 
   render() {
     return (
-      <div id="content">
-        <h1>Add Product</h1>
-        <form onSubmit={(event) => {
-          event.preventDefault()
-          const name = this.productName.value
-          const price = window.web3.utils.toWei(this.productPrice.value.toString(), 'Ether')
-          this.props.createProduct(name, price)
-        }}>
-          <div className="form-group mr-sm-2">
-            <input
-              id="productName"
-              type="text"
-              ref={(input) => { this.productName = input }}
-              className="form-control"
-              placeholder="Product Name"
-              required />
-          </div>
-          <div className="form-group mr-sm-2">
-            <input
-              id="productPrice"
-              type="text"
-              ref={(input) => { this.productPrice = input }}
-              className="form-control"
-              placeholder="Product Price"
-              required />
-          </div>
-          <button type="submit" className="btn btn-primary">Add Product</button>
-        </form>
+      <div id="content" className="content">
+        <h2>Add Product</h2>
+        <section className="table-content">
+          <form class="form-inline" onSubmit={(event) => {
+            event.preventDefault()
+            const name = this.productName.value
+            const price = window.web3.utils.toWei(this.productPrice.value.toString(), 'Ether')
+            this.props.createProduct(name, price)
+          }}>
+            <label for="productName">Product Name:</label>
+                  <input type="text" placeholder="ProductName"  ref={(input) => { this.productName = input }}
+                      required="" id="productName" />
+                  <label for="productPrice">Product Price:</label>
+                  <input type="text" placeholder="Product Price" 
+                      required="" ref={(input) => { this.productPrice = input }} id="productPrice" />
+                  <button type="submit">Add Product</button>
+          </form>           
+        </section>
+        
         <p>&nbsp;</p>
         <h2>Buy Product</h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">Owner</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody id="productList">
-            { this.props.products.map((product, key) => {
+        <div>
+                <table className='styled-table'>
+
+                    <thead>
+                        <tr>
+                            <th> # </th>
+                            <th> Name</th>
+                            <th> Price </th>
+                            <th> Owner </th>
+                            <th>Buy</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+
+                    { this.props.products.map((product, key) => {
               return(
                 <tr key={key}>
                   <th scope="row">{product.id.toString()}</th>
@@ -54,7 +51,7 @@ class Main extends Component {
                   <td>{product.owner}</td>
                   <td>
                     { !product.purchased
-                      ? <button
+                      ? <button className="button-green"
                           name={product.id}
                           value={product.price}
                           onClick={(event) => {
@@ -63,39 +60,44 @@ class Main extends Component {
                         >
                           Buy
                         </button>
-                      : null
+                      : <div className="button-red" >Sold</div>
                     }
                     </td>
                 </tr>
               )
             })}
-          </tbody>
-        </table>
+                    </tbody>
+                </table>
+        </div>
         <p>&nbsp;</p>
         <h2>Purchased Product</h2>
-        <table className="table">
+        <div>
+
+        <table className='styled-table'> 
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col"></th>
+                <th> # </th>
+                <th> Name</th>
+                <th> Price </th>
+                <th>Buyer id</th>
             </tr>
           </thead>
           <tbody id="productList">
-            { this.props.products.map((product, key) => {
+          { this.props.products.map((product, key) => {
               if(product.purchased && product.owner==this.props.account){
                 return(
                       <tr key={key}>
                       <th scope="row">{product.id.toString()}</th>
                       <td>{product.name}</td>
                       <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
+                      <td>{product.owner.toString()} </td>
                       </tr>
                 )
               }
             })}
           </tbody>
         </table>
+        </div>
       </div>
     );
   }

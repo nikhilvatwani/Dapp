@@ -1,0 +1,21 @@
+.button-red {
+    border: none;
+    color: rgb(12, 10, 10);
+    padding: 5px 40px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    background-color: #c70f27c5;
+  }
+  .button-green {
+    border: none;
+    color: rgb(12, 10, 10);
+    padding: 5px 40px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #05a01ce8;
+  }

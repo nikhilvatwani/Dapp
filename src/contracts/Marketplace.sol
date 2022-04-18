@@ -30,7 +30,7 @@ contract Marketplace {
     );
 
     constructor() public {
-        name = "Dapp University Marketplace";
+        name = "Resume Marketplace";
     }
 
     modifier onlyBuyer(address owner) {
@@ -43,9 +43,12 @@ contract Marketplace {
       _;
     }
 
-    function createProduct(string memory _name, uint _price) public {
-        require(bytes(_name).length > 0);
-        require(_price > 0);
+    modifier checkvalidProduct(string  memory _name, uint _price) {
+      require(bytes(_name).length > 0 && _price > 0);
+      _;
+    }
+
+    function createProduct(string memory _name, uint _price) public checkvalidProduct(_name,_price) {
         productCount ++;
         products[productCount] = Product(productCount, _name, _price, msg.sender, false);
         emit ProductCreated(productCount, _name, _price, msg.sender, false);
