@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Web3 from 'web3'
 import './App.css';
 import Marketplace from '../abis/Marketplace.json'
+import DappToken from '../abis/DappToken.json'
 import Navbar from './Navbar'
 import Main from './Main'
 
@@ -32,10 +33,15 @@ class App extends Component {
     this.setState({ account: accounts[0] })
     const networkId = await web3.eth.net.getId()
     const networkData = Marketplace.networks[networkId]
+    const dappNetworkData = DappToken.networks[networkId]
     if(networkData) {
-      const marketplace = web3.eth.Contract(Marketplace.abi, networkData.address)
+      const marketplace = new web3.eth.Contract(Marketplace.abi, networkData.address)
+      const dappToken = new web3.eth.Contract(DappToken.abi, dappNetworkData.address)
+      this.setState({ dappToken })
       this.setState({ marketplace })
       const productCount = await marketplace.methods.productCount().call()
+      const bal = await dappToken.methods.getTokenBalance(accounts[0])
+      this.setState({ balance: bal })
       this.setState({ productCount })
       // Load products
       for (var i = 1; i <= productCount; i++) {
@@ -61,6 +67,7 @@ class App extends Component {
 
     this.createProduct = this.createProduct.bind(this)
     this.purchaseProduct = this.purchaseProduct.bind(this)
+    this.transferFrom = this.transferFrom.bind(this)
   }
 
   createProduct(name, price) {
@@ -71,18 +78,28 @@ class App extends Component {
     })
   }
 
+  transferFrom(from, to, price){
+    this.state.dappToken.methods.transferFrom(from, to, price).send({ from: this.state.account})
+  }
+
   purchaseProduct(id, price) {
     this.setState({ loading: true })
-    this.state.marketplace.methods.purchaseProduct(id).send({ from: this.state.account, value: price })
-    .once('receipt', (receipt) => {
-      this.setState({ loading: false })
+    this.state.marketplace.methods.getSellerAddress(id).call().then(res =>{
+      this.state.dappToken.methods.transfer(res, price).send({ from: this.state.account}).once('receipt', (result)=>{
+        console.log("here")
+        this.state.marketplace.methods.purchaseProduct(id).send({ from: this.state.account, value: price })
+        .once('receipt', (receipt) => {
+          this.setState({ loading: false })
+        })
+      })
     })
+  
   }
 
   render() {
     return (
       <div>
-        <Navbar account={this.state.account} />
+        <Navbar account={this.state.account} balance={this.state.balance}/>
         <br/>
         <div className="container-fluid mt-5">
           <div className="row">
@@ -92,7 +109,7 @@ class App extends Component {
                 : <Main
                   products={this.state.products}
                   createProduct={this.createProduct}
-                  purchaseProduct={this.purchaseProduct} account={this.state.account}/>
+                  purchaseProduct={this.purchaseProduct} account={this.state.account} transferFrom={this.transferFrom}/>
               }
             </main>
           </div>

@@ -7,6 +7,25 @@ class Main extends Component {
   render() {
     return (
       <div id="content" className="content">
+        <h2>Send Dapp Token</h2>
+        <section className="table-content">
+          <form class="form-inline" onSubmit={(event) => {
+            event.preventDefault()
+            const toAddress = this.toAddress.value
+            const price = window.web3.utils.toWei(this.amount.value.toString(), 'Ether')
+            this.props.transferFrom(this.props.account, toAddress, price)
+          }}>
+            <label for="toAddress">To Address:</label>
+                <input type="text" placeholder="address"  ref={(input) => { this.toAddress = input }}
+                    required="" id="toAddress" />
+                <label for="amount">Amount:</label>
+                  <input type="text" placeholder="Amount" 
+                      required="" ref={(input) => { this.amount = input }} id="amount" />
+                <button type="submit">Send Token</button>
+          </form> 
+          </section>   
+
+        <p>&nbsp;</p> 
         <h2>Add Product</h2>
         <section className="table-content">
           <form class="form-inline" onSubmit={(event) => {
