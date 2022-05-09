@@ -4,16 +4,23 @@ import classes from './button.css';
 
 class Main extends Component {
 
+
+  
   render() {
+    console.log("inside main")
+    console.log(this.props.balance)
+
     return (
       <div id="content" className="content">
-        <h2>Send Dapp Token</h2>
+        <h2>Token Balace :  { this.props.balance/100}</h2>
+        <p>&nbsp;</p>
+        <h2>Send Infy Token</h2>
         <section className="table-content">
           <form class="form-inline" onSubmit={(event) => {
             event.preventDefault()
             const toAddress = this.toAddress.value
             const price = window.web3.utils.toWei(this.amount.value.toString(), 'Ether')
-            this.props.transferFrom(this.props.account, toAddress, price)
+            this.props.transferFrom(this.props.account, toAddress, price/10000000000000000)
           }}>
             <label for="toAddress">To Address:</label>
                 <input type="text" placeholder="address"  ref={(input) => { this.toAddress = input }}
@@ -31,7 +38,7 @@ class Main extends Component {
           <form class="form-inline" onSubmit={(event) => {
             event.preventDefault()
             const name = this.productName.value
-            const price = window.web3.utils.toWei(this.productPrice.value.toString(), 'Ether')
+            const price = window.web3.utils.toWei((this.productPrice.value/100).toString(), 'Ether')
             this.props.createProduct(name, price)
           }}>
             <label for="productName">Product Name:</label>
@@ -66,18 +73,18 @@ class Main extends Component {
                 <tr key={key}>
                   <th scope="row">{product.id.toString()}</th>
                   <td>{product.name}</td>
-                  <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
+                  <td>{window.web3.utils.fromWei((product.price).toString(), 'Ether')*1000000} Infy</td>
                   <td>{product.owner}</td>
                   <td>
                     { !product.purchased
-                      ? <button className="button-green"
+                      ? <button className="button-red"
                           name={product.id}
-                          value={product.price}
+                          value={product.price*1000000}
                           onClick={(event) => {
                             this.props.purchaseProduct(event.target.name, event.target.value)
                           }}
                         >
-                          Buy
+                          sold
                         </button>
                       : <div className="button-red" >Sold</div>
                     }
@@ -103,12 +110,12 @@ class Main extends Component {
           </thead>
           <tbody id="productList">
           { this.props.products.map((product, key) => {
-              if(product.purchased && product.owner==this.props.account){
+              if(product.purchased && product.owner===this.props.account){
                 return(
                       <tr key={key}>
                       <th scope="row">{product.id.toString()}</th>
                       <td>{product.name}</td>
-                      <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Eth</td>
+                      <td>{window.web3.utils.fromWei(product.price.toString(), 'Ether')} Infy</td>
                       <td>{product.owner.toString()} </td>
                       </tr>
                 )

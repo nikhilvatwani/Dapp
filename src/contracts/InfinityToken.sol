@@ -1,8 +1,8 @@
 pragma solidity >=0.4.21 <0.6.0;
 
-contract DappToken {
-    string public constant name = "Dapp Token";
-    string public constant symbol = "DAPP";
+contract InfinityToken {
+    string public constant name = "Infinity Token";
+    string public constant symbol = "Infinity";
     uint256 public totalSupply;
     uint tokenPrice = 1000000000000000;
 
@@ -39,6 +39,7 @@ contract DappToken {
     }
 
     function transfer(address _to, uint256 _value) public returns (bool success) {
+        _value = _value;
         require(balanceOf[msg.sender] >= _value);
 
         balanceOf[msg.sender] -= _value;

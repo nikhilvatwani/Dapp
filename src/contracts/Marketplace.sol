@@ -1,14 +1,15 @@
 pragma solidity >=0.4.21 <0.6.0;
-import "./DappToken.sol";
+import "./InfinityToken.sol";
 
 contract Marketplace {
     string public name;
     uint public productCount = 0;
     mapping(uint => Product) public products;
     address admin;
-    DappToken public tokenContract;
+    InfinityToken public tokenContract;
     uint256 public tokenPrice;
     uint256 public tokensSold;
+    
 
     struct Product {
         uint id;
@@ -34,7 +35,7 @@ contract Marketplace {
         bool purchased
     );
 
-    constructor(DappToken _tokenContract, uint256 _tokenPrice) public {
+    constructor(InfinityToken _tokenContract, uint256 _tokenPrice) public {
         name = "Resume Marketplace";
         admin = msg.sender;
         tokenContract = _tokenContract;
@@ -48,7 +49,7 @@ contract Marketplace {
     }
 
     modifier checkBuyingPrice(uint price) {
-      require(msg.value >= price);
+      require(msg.value/100 >= price);
       _;
     }
 
@@ -63,7 +64,7 @@ contract Marketplace {
 
     function createProduct(string memory _name, uint256 _price) public checkvalidProduct(_name,_price) {
         productCount ++;
-        products[productCount] = Product(productCount, _name, _price, msg.sender, false);
+        products[productCount] = Product(productCount, _name, _price/100, msg.sender, false);
         emit ProductCreated(productCount, _name, _price, msg.sender, false);
     }
 
