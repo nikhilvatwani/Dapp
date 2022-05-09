@@ -77,14 +77,14 @@ class Main extends Component {
                   <td>{product.owner}</td>
                   <td>
                     { !product.purchased
-                      ? <button className="button-red"
+                      ? <button className="button-green"
                           name={product.id}
                           value={product.price*1000000}
                           onClick={(event) => {
                             this.props.purchaseProduct(event.target.name, event.target.value)
                           }}
                         >
-                          sold
+                          Buy
                         </button>
                       : <div className="button-red" >Sold</div>
                     }
