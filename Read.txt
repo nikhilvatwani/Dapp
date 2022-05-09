@@ -1,0 +1,11 @@
+Command to run :
+
+npm install
+
+npm install --save truffle-hdwallet-provider
+
+truffle compile
+
+truffle migrate --network ropsten --skipDryRun
+
+npm run start
